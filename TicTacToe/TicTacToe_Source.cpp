@@ -18,7 +18,7 @@ using namespace std;
 const int SZ = 3;
 
 // Prototypes
-char userChoice(char choice, char layout[SZ][SZ]);
+bool userChoiceValid ();
 
 // Main
 int main()
@@ -34,29 +34,31 @@ int main()
 	int eCount = 0;								// Count elements
 	int colCount = 0;							// Count columns
 	int rowCount = 0;							// Count rows
-
+	bool valid = false;
 	while(!closeWindow) {
 		// Display Title
-		cout << "\n		   -----------";
-		cout << "\n		   Tic Tac Toe" << "\n		   -----------" << endl;
-		cout << "\n	| Player 1 [X] --- Player 2 [O] |";
-		cout << "\n	 -------------------------------\n" << endl;
+		cout << "\n	  -----------";
+		cout << "\n	  Tic Tac Toe" << "\n	  -----------" << endl;
+		cout << "\n  | Player [X]  ---   CPU [O] |";
+		cout << "\n  -----------------------------\n" << endl;
 
 		// Display Board
-		//cout << "__|__|__" << endl;
-		//cout << "__|__|__" << endl;
-		//cout << "  |  |  " << endl;
 		for (int i = 0; i < 3; i++) 
 		{
+			if (rowCount >= 1 && rowCount < 3) {
+				cout << "      =====================" << endl;
+			}
 			for (int j = 0; j < 3; j++) 
 			{
+
 				cout << "	" << layout[i][j];
 				eCount++;
 				if (colCount <= 1)
 				{
-					cout << "	|";
+					cout << "   |";
 					colCount++;
 				}
+
 				if (eCount > 2)
 				{
 					cout << "\n";
@@ -68,16 +70,34 @@ int main()
 		}
 		cout << endl;
 
-		system("pause");
 		// Gather user choice
+			do {
+				valid = userChoiceValid();
+			} while (valid == false);
 		// Have AI pick random spot
+
+		system("pause");
+
 	}
 	return 0;
 }
 
 // Functions
 
-char userChoice(char choice, char layout[SZ][SZ])
+bool userChoiceValid()
 {
-	return 0;
+	int choice = 0;
+	cout << "Which grid number would you like to place an X (1-9)?" << endl;
+	cin >> choice;
+	bool validation = false;
+	if (choice >= 1 && choice <=9)
+	{
+		validation = true;
+	}
+	else {
+		cout << "\nInvalid selection. ";
+		validation = false;
+	}
+
+	return validation;
 }
