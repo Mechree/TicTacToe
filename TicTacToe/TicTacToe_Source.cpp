@@ -21,29 +21,29 @@ using namespace std;
 const int SZ = 3;
 
 // Prototypes
-bool userChoiceValid (int *choice);							// Validates user grid choice
-void boardLayout(char play[SZ][SZ], int choice);			// Used to place grid choices
-void displayBoard(char board[SZ][SZ]);						// Used to display board
-void aiChoice(char play[SZ][SZ]);			// AI randomly picks available grid space
-
+bool userChoiceValid (int *choice);									// Validates user grid choice
+void boardLayout(char play[SZ][SZ], int choice, bool *valid);		// Used to place grid choices
+void displayBoard(char board[SZ][SZ]);								// Used to display board
+void aiChoice(char play[SZ][SZ]);									// AI randomly picks available grid space
+void winCondition(char board[SZ][SZ]);
 // Main
 int main()
 {
 	// Initalizers
-	char layoutGrid[SZ][SZ] =					// Board Layout w/ Grids
+	char layoutGrid[SZ][SZ] =							// Board Layout w/ Grids
 	{
 		{'1','2','3'},
 		{'4','5','6'},
 		{'7', '8', '9'}
 	};
-	char layoutPlay[SZ][SZ] =					// Empty board layout used for play
+	char layoutPlay[SZ][SZ] =							// Empty board layout used for play
 	{
 		{' ',' ',' '},
 		{' ',' ',' '},
 		{' ',' ',' '}
 	};
-	bool closeWindow = false;					// Close window
-	bool valid = false;							// Validate choice
+	bool closeWindow = false;							// Close window
+	bool valid = false;									// Validate choice
 
 	// Display Title
 	cout << "\n	  -----------";
@@ -58,20 +58,19 @@ int main()
 		cout << endl;
 
 		// Reset grid choice
-		int choice = 0;							// Grid choice
+		int choice = 0;									// Grid choice
 		cout << endl;
 
 		// Gather user choice
 		do {
 			valid = userChoiceValid(&choice);
+			// Display play grid
+			boardLayout(layoutPlay, choice, &valid);	// Place grid choice
 		} while (valid == false);
-
-		// Display play grid
-		boardLayout(layoutPlay, choice);		// Place grid choice
 
 		// Have AI pick random spot
 		aiChoice(layoutPlay);
-		displayBoard(layoutPlay);				// Display updated gameboard
+		displayBoard(layoutPlay);						// Display updated gameboard
 		//system("pause");
 
 	}
@@ -82,11 +81,12 @@ int main()
 
 void displayBoard(char board[SZ][SZ])
 {
-	// Display Board w/ grids
-	int rowCount = 0;							// Count rows
-	int eCount = 0;								// Count elements
-	int colCount = 0;							// Count columns
+	// Initalizers
+	int rowCount = 0;								// Count rows
+	int eCount = 0;									// Count elements
+	int colCount = 0;								// Count columns
 
+	// Display Board w/ grids
 	for (int i = 0; i < 3; i++)
 	{
 		if (rowCount >= 1 && rowCount < 3) {
@@ -114,10 +114,11 @@ void displayBoard(char board[SZ][SZ])
 	}
 }
 
-void aiChoice(char play[SZ][SZ])							// Getting errors w/ element placement
+void aiChoice(char play[SZ][SZ])					// Needs solution for when all grids are full
 {
-	vector<int> gridOp;					// Store available grids for AI
-	int gridSpot = 0;					// Track grid elements
+	// Initalizers
+	vector<int> gridOp;								// Store available grids for AI
+	int gridSpot = 0;								// Track grid elements
 	
 	// Iterate through board, identify available grids, push gridSpot to vector
 	for (int i = 0; i < 3; i++)
@@ -136,9 +137,11 @@ void aiChoice(char play[SZ][SZ])							// Getting errors w/ element placement
 		cout << gridOp[i];
 	}
 	cout << endl;
-	
-	srand(time(NULL));				// seed random number generator with time
-	int aiPick = rand() % (gridOp.size() + 1);
+
+	// Seed random number generator with time
+	srand(time(NULL));				
+	int aiPick = rand() % (gridOp.size() - 1);
+	aiPick = gridOp[aiPick];
 
 	if (aiPick >= 6 && aiPick <= 8) {
 		aiPick = aiPick - 6;
@@ -147,7 +150,7 @@ void aiChoice(char play[SZ][SZ])							// Getting errors w/ element placement
 	}
 	else if (aiPick >= 3 && aiPick <= 5)
 	{
-		aiPick = aiPick - 4;
+		aiPick = aiPick - 3;
 		cout << ">3-AI pick is: " << aiPick << endl;
 		play[1][aiPick] = 'O';
 	}
@@ -156,15 +159,23 @@ void aiChoice(char play[SZ][SZ])							// Getting errors w/ element placement
 		cout << "AI pick is: " << aiPick << endl;
 		play[0][aiPick] = 'O';
 	}
-	/*cout << aiPick << endl;*/
+
+}
+
+void winCondition(char board[SZ][SZ])
+{
 
 }
 
 bool userChoiceValid( int *choice)
 {
+	// Initializer
+	bool validation = false;
+
+	// Get user choice
 	cout << "Which grid number would you like to place an X (1-9)?" << endl;
 	cin >> *choice;
-	bool validation = false;
+	// Check user input
 	if (*choice >= 1 && *choice <= 9 && !cin.fail())
 	{
 		validation = true;
@@ -179,15 +190,18 @@ bool userChoiceValid( int *choice)
 	return validation;
 }
 
-void boardLayout(char play[SZ][SZ], int choice)
+void boardLayout(char play[SZ][SZ], int choice, bool *valid)
 {
+	// Initalizer
 	string unavail = "Grid space is already occupied, please select a different grid space.\n";
+
 	// Check for grid availability and place choice
 	switch (choice)
 	{
 	case 1:
 		if (play[0][0] == 'X' || play[0][0] == 'O') {
 			cout << unavail << endl;
+			*valid = false;
 			break;
 		}
 		play[0][0] = 'X';
@@ -195,6 +209,7 @@ void boardLayout(char play[SZ][SZ], int choice)
 	case 2:
 		if (play[0][1] == 'X' || play[0][1] == 'O') {
 			cout << unavail << endl;
+			*valid = false;
 			break;
 		}
 		play[0][1] = 'X';
@@ -202,6 +217,7 @@ void boardLayout(char play[SZ][SZ], int choice)
 	case 3:
 		if (play[0][2] == 'X' || play[0][2] == 'O') {
 			cout << unavail << endl;
+			*valid = false;
 			break;
 		}
 		play[0][2] = 'X';
@@ -209,6 +225,7 @@ void boardLayout(char play[SZ][SZ], int choice)
 	case 4:
 		if (play[1][0] == 'X' || play[1][0] == 'O') {
 			cout << unavail << endl;
+			*valid = false;
 			break;
 		}
 		play[1][0] = 'X';
@@ -216,6 +233,7 @@ void boardLayout(char play[SZ][SZ], int choice)
 	case 5:
 		if (play[1][1] == 'X' || play[1][1] == 'O') {
 			cout << unavail << endl;
+			*valid = false;
 			break;
 		}
 		play[1][1] = 'X';
@@ -223,6 +241,7 @@ void boardLayout(char play[SZ][SZ], int choice)
 	case 6:
 		if (play[1][2] == 'X' || play[1][2] == 'O') {
 			cout << unavail << endl;
+			*valid = false;
 			break;
 		}
 		play[1][2] = 'X';
@@ -230,6 +249,7 @@ void boardLayout(char play[SZ][SZ], int choice)
 	case 7:
 		if (play[2][0] == 'X' || play[2][0] == 'O') {
 			cout << unavail << endl;
+			*valid = false;
 			break;
 		}
 		play[2][0] = 'X';
@@ -237,6 +257,7 @@ void boardLayout(char play[SZ][SZ], int choice)
 	case 8:
 		if (play[2][1] == 'X' || play[2][1] == 'O') {
 			cout << unavail << endl;
+			*valid = false;
 			break;
 		}
 		play[2][1] = 'X';
@@ -244,6 +265,7 @@ void boardLayout(char play[SZ][SZ], int choice)
 	case 9:
 		if (play[2][2] == 'X' || play[2][2] == 'O') {
 			cout << unavail << endl;
+			*valid = false;
 			break;
 		}
 		play[2][2] = 'X';
