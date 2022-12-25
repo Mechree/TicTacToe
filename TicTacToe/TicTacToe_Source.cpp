@@ -18,7 +18,7 @@ using namespace std;
 const int SZ = 3;
 
 // Prototypes
-bool userChoiceValid ();
+bool userChoiceValid (char plays[SZ][SZ], int *choice);
 
 // Main
 int main()
@@ -33,16 +33,20 @@ int main()
 	bool closeWindow = false;
 	int eCount = 0;								// Count elements
 	int colCount = 0;							// Count columns
-	int rowCount = 0;							// Count rows
 	bool valid = false;
+	int choice = 0;
+
+	// Display Title
+	cout << "\n	  -----------";
+	cout << "\n	  Tic Tac Toe" << "\n	  -----------" << endl;
+	cout << "\n  | Player [X]  ---   CPU [O] |";
+	cout << "\n  -----------------------------\n" << endl;
+
 	while(!closeWindow) {
-		// Display Title
-		cout << "\n	  -----------";
-		cout << "\n	  Tic Tac Toe" << "\n	  -----------" << endl;
-		cout << "\n  | Player [X]  ---   CPU [O] |";
-		cout << "\n  -----------------------------\n" << endl;
+		cout << endl;
 
 		// Display Board
+		int rowCount = 0;							// Count rows
 		for (int i = 0; i < 3; i++) 
 		{
 			if (rowCount >= 1 && rowCount < 3) {
@@ -72,7 +76,7 @@ int main()
 
 		// Gather user choice
 			do {
-				valid = userChoiceValid();
+				valid = userChoiceValid(layout, &choice);
 			} while (valid == false);
 		// Have AI pick random spot
 
@@ -84,17 +88,18 @@ int main()
 
 // Functions
 
-bool userChoiceValid()
+bool userChoiceValid(char plays[SZ][SZ], int *choice)
 {
-	int choice = 0;
 	cout << "Which grid number would you like to place an X (1-9)?" << endl;
-	cin >> choice;
+	cin >> *choice;
 	bool validation = false;
-	if (choice >= 1 && choice <=9)
+	if (*choice >= 1 && *choice <= 9 && !cin.fail())
 	{
 		validation = true;
 	}
 	else {
+		cin.clear();
+		cin.ignore();
 		cout << "\nInvalid selection. ";
 		validation = false;
 	}
