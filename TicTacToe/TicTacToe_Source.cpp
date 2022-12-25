@@ -12,6 +12,9 @@
 #include<string>
 #include<iterator>
 #include<cstring>
+#include<ctime>
+#include<vector>
+#include <cstdlib>
 using namespace std;
 
 // Globals
@@ -21,6 +24,7 @@ const int SZ = 3;
 bool userChoiceValid (int *choice);							// Validates user grid choice
 void boardLayout(char play[SZ][SZ], int choice);			// Used to place grid choices
 void displayBoard(char board[SZ][SZ]);						// Used to display board
+void aiChoice(char play[SZ][SZ]);			// AI randomly picks available grid space
 
 // Main
 int main()
@@ -30,7 +34,7 @@ int main()
 	{
 		{'1','2','3'},
 		{'4','5','6'},
-		{'7','8','9'}
+		{'7', '8', '9'}
 	};
 	char layoutPlay[SZ][SZ] =					// Empty board layout used for play
 	{
@@ -50,7 +54,7 @@ int main()
 	// Display Board w/ grids
 	displayBoard(layoutGrid);
 
-	while(!closeWindow) {
+	while (!closeWindow) {
 		cout << endl;
 
 		// Reset grid choice
@@ -66,7 +70,7 @@ int main()
 		boardLayout(layoutPlay, choice);		// Place grid choice
 
 		// Have AI pick random spot
-
+		aiChoice(layoutPlay);
 		displayBoard(layoutPlay);				// Display updated gameboard
 		//system("pause");
 
@@ -108,6 +112,52 @@ void displayBoard(char board[SZ][SZ])
 			}
 		}
 	}
+}
+
+void aiChoice(char play[SZ][SZ])							// Getting errors w/ element placement
+{
+	vector<int> gridOp;					// Store available grids for AI
+	int gridSpot = 0;					// Track grid elements
+	
+	// Iterate through board, identify available grids, push gridSpot to vector
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (play[i][j] != 'X' && play[i][j] != 'O') {
+				gridOp.push_back(gridSpot);
+			}
+			gridSpot++;
+		}
+	}
+
+	for (int i = 0; i < gridOp.size(); i++)
+	{
+		cout << gridOp[i];
+	}
+	cout << endl;
+	
+	srand(time(NULL));				// seed random number generator with time
+	int aiPick = rand() % (gridOp.size() + 1);
+
+	if (aiPick >= 6 && aiPick <= 8) {
+		aiPick = aiPick - 6;
+		cout << ">5-AI pick is: " <<  aiPick << endl;
+		play[2][aiPick] =  'O';
+	}
+	else if (aiPick >= 3 && aiPick <= 5)
+	{
+		aiPick = aiPick - 4;
+		cout << ">3-AI pick is: " << aiPick << endl;
+		play[1][aiPick] = 'O';
+	}
+	else 
+	{
+		cout << "AI pick is: " << aiPick << endl;
+		play[0][aiPick] = 'O';
+	}
+	/*cout << aiPick << endl;*/
+
 }
 
 bool userChoiceValid( int *choice)
