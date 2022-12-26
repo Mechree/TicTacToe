@@ -164,7 +164,7 @@ void Ai_Choice(char play[SZ][SZ])
 
 }
 
-bool Win_Condition(char play[SZ][SZ])					// AI win condition not working....
+bool Win_Condition(char play[SZ][SZ])					
 {
 	bool winner = false;
 	// Check horizontal
@@ -189,7 +189,7 @@ bool Win_Condition(char play[SZ][SZ])					// AI win condition not working....
 			}
 			else if (play[i][j] == 'O')
 			{
-				aiStreak = 0;
+				aiStreak++;
 				if (aiStreak == 3)
 				{
 					cout << "\nCPU Wins!" << endl;
@@ -198,6 +198,95 @@ bool Win_Condition(char play[SZ][SZ])					// AI win condition not working....
 				}
 			}
 			
+		}
+	}
+
+	// Check vertical
+	for (int i = 0; i < 3; i++)
+	{
+		// Tally vertical streaks
+		int playerStreak = 0;
+		int aiStreak = 0;
+
+		// Check for 3 in a vertical row
+		for (int j = 0; j < 3; j++)
+		{
+			if (play[j][i] == 'X')
+			{
+				playerStreak++;
+				if (playerStreak == 3)
+				{
+					cout << "\nPlayer Wins!" << endl;
+					winner = true;
+					return winner;
+				}
+			}
+			else if (play[j][i] == 'O')
+			{
+				aiStreak++;
+				if (aiStreak == 3)
+				{
+					cout << "\nCPU Wins!" << endl;
+					winner = true;
+					return winner;
+				}
+			}
+		}
+	}
+
+	// Check diagnal left to right
+	int playerStreak = 0;
+	int aiStreak = 0;
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (play[i][i] == 'X')
+		{
+			playerStreak++;
+			if (playerStreak == 3)
+			{
+				cout << "\nPlayer Wins!" << endl;
+				winner = true;
+				return winner;
+			}
+		}
+		else if (play[i][i] == 'O')
+		{
+			aiStreak++;
+			if (aiStreak == 3)
+			{
+				cout << "\nCPU Wins!" << endl;
+				winner = true;
+				return winner;
+			}
+		}
+	}
+
+	// Check diagnal right to left
+	playerStreak = 0;
+	aiStreak = 0;
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (play[i][2 - i] == 'X')
+		{
+			playerStreak++;
+			if (playerStreak == 3)
+			{
+				cout << "\nPlayer Wins!" << endl;
+				winner = true;
+				return winner;
+			}
+		}
+		else if (play[i][2-i] == 'O')
+		{
+			aiStreak++;
+			if (aiStreak == 3)
+			{
+				cout << "\nCPU Wins!" << endl;
+				winner = true;
+				return winner;
+			}
 		}
 	}
 	return winner;
