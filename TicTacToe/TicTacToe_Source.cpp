@@ -1,4 +1,3 @@
-#include "TicTacToe_Source.h"
 // Michael McCain
 // 12/24/2022
 // Tic Tac Toe
@@ -35,7 +34,7 @@ int main()
 	{
 		{'1','2','3'},
 		{'4','5','6'},
-		{'7', '8', '9'}
+		{'7','8','9'}
 	};
 	char Layout_Play[SZ][SZ] =								// Empty board layout used for play
 	{
@@ -118,7 +117,7 @@ void Display_Board(char board[SZ][SZ])
 void Ai_Choice(char play[SZ][SZ])					
 {
 	// Initalizers
-	vector<int> Grid_Op;								// Store available grids for AI
+	vector<int> Grid_Op;							// Store available grids for AI
 	int gridSpot = 0;								// Track grid elements
 	
 	// Iterate through board, identify available grids, push gridSpot to vector
